@@ -177,3 +177,26 @@ ListItem
         )
     ])
 ```
+
+```swift
+List {
+    ...
+    ListItem
+        .onSwipe(leading: [
+            Slot(
+                image: {
+                    Image("localImageName")
+                        // To allow colorifying
+                        .renderingMode(.template)
+                },
+                title: {
+                    Text("Title").embedInAnyView()
+                },
+                action: { print("Slot tapped") },
+                style: .init(background: .orange)
+            )
+        ], only: true)
+}.environmentObject(SwipeManager())
+
+    
+```
