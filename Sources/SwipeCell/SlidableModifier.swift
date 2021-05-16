@@ -83,7 +83,7 @@ public struct SlidableModifier: ViewModifier, Animatable {
     public func body(content: Content) -> some View {
         
         ZStack(alignment: self.zStackAlignment) {
-            if isOnly {
+            if only {
                 VStack{}
                     .onChange(of: swipeManager.id, perform: { value in
                         if value != id {
@@ -159,9 +159,7 @@ public struct SlidableModifier: ViewModifier, Animatable {
                         self.currentSlotsWidth = 0
                     } else {
                         self.currentSlotsWidth = self.totalSlotWidth
-                        if isOnly {
-                            swipeManager.id = id
-                        }
+                        if only { swipeManager.id = id }
                     }
                 }
             }
