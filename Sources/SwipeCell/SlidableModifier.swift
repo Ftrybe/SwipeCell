@@ -8,6 +8,7 @@
 import SwiftUI
 
 public struct SlidableModifier: ViewModifier, Animatable {
+    @EnvironmentObject var swipeManager:SwipeManager
     
     public enum SlideAxis {
         case left2Right
@@ -65,10 +66,12 @@ public struct SlidableModifier: ViewModifier, Animatable {
     @State private var slideAxis: SlideAxis = SlideAxis.left2Right
     private var leadingSlots: [Slot]
     private var trailingSlots: [Slot]
-    
-    public init(leading: [Slot], trailing: [Slot]) {
+    private var only: Bool
+    private var id = UUID()
+    public init(leading: [Slot], trailing: [Slot], only: Bool) {
         self.leadingSlots = leading
         self.trailingSlots = trailing
+        self.only = only
     }
     
     private func flushState() {
@@ -80,6 +83,14 @@ public struct SlidableModifier: ViewModifier, Animatable {
     public func body(content: Content) -> some View {
         
         ZStack(alignment: self.zStackAlignment) {
+            if isOnly {
+                VStack{}
+                    .onChange(of: swipeManager.id, perform: { value in
+                        if value != id {
+                            self.flushState()
+                        }
+                    })
+            }
             
             content
             .offset(self.contentOffset)
@@ -148,6 +159,9 @@ public struct SlidableModifier: ViewModifier, Animatable {
                         self.currentSlotsWidth = 0
                     } else {
                         self.currentSlotsWidth = self.totalSlotWidth
+                        if isOnly {
+                            swipeManager.id = id
+                        }
                     }
                 }
             }
